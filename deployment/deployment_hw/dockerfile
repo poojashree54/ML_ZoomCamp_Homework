@@ -1,0 +1,20 @@
+FROM agrigorev/zoomcamp-model:2025
+# add your stuff here
+
+WORKDIR /code
+
+# Install dependencies from pyproject.toml
+# COPY pyproject.toml uv.lock ./
+# RUN pip install uv && uv sync --frozen --no-dev
+
+COPY Pipfile Pipfile.lock ./
+RUN pip install pipenv && pipenv install --system --deploy
+
+# Copy your FastAPI script
+COPY predict_v2.py ./
+
+# Expose the FastAPI port
+EXPOSE 9696
+
+# Run the app with uvicorn
+CMD ["uv", "run", "--no-sync", "uvicorn", "predict_v2:app", "--host=0.0.0.0", "--port=9696"]
